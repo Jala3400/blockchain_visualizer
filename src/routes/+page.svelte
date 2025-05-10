@@ -1,2 +1,8 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://svelte.dev/docs/kit">svelte.dev/docs/kit</a> to read the documentation</p>
+<script>
+    import BlockCard from "$lib/components/molecules/BlockCard/BlockCard.svelte";
+    import { Block } from "$lib/classes/Block";
+
+    let block = new Block("0", "Hello, world!");
+</script>
+
+<BlockCard {block} />
