@@ -2,11 +2,20 @@
     import { Block } from "$lib/classes/Block";
     import { BlockCardClass } from "./BlockCardClass.svelte.ts";
 
-    let { block, prevHash = "0" }: { block: Block; prevHash?: string } =
-        $props();
+    let {
+        block,
+        prevHash = "0",
+        update = () => {},
+    }: { block: Block; prevHash?: string; update?: () => void } = $props();
 
     const blockCard = new BlockCardClass(block);
     let isValidHash = $derived(blockCard.getIsValidHash());
+
+    $effect(() => {
+        // Calls update when there is a change in the hash
+        blockCard.getHash();
+        update();
+    });
 
     function updatePrevHash(newPrevHash: string) {
         blockCard.updatePrevHash(newPrevHash);
@@ -78,9 +87,7 @@
     .block-card {
         border: 1px solid #ccc;
         padding: 10px;
-        margin: 10px;
         border-radius: 8px;
-        transition: background-color 0.3s ease;
         display: flex;
         flex-direction: column;
         gap: 10px;
