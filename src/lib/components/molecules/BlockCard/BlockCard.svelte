@@ -1,55 +1,77 @@
 <script lang="ts">
     import { Block } from "$lib/classes/Block";
+    import { BlockCardClass } from "./BlockCardClass.svelte.ts";
 
     let { block, prevHash = "0" }: { block: Block; prevHash?: string } =
         $props();
 
-    let data = $state(block.getData());
-    let isValidHash = $state(false);
+    const blockCard = new BlockCardClass(block);
+    let isValidHash = $state(
+        blockCard.getHash().substring(0, blockCard.getDifficulty()) ===
+            Array(blockCard.getDifficulty() + 1).join("0")
+    );
 
-    $effect(() => {
-        if (prevHash) {
-            block = new Block(
-                prevHash,
-                data,
-                block.getNonce(),
-                block.getDifficulty()
-            );
-        }
+    function updatePrevHash(newPrevHash: string) {
+        blockCard.updatePrevHash(newPrevHash);
+        checkValidHash();
+    }
+
+    function updateData(newData: string) {
+        blockCard.updateData(newData);
+        checkValidHash();
+    }
+
+    function updateDifficulty(newDifficulty: number) {
+        blockCard.updateDifficulty(newDifficulty);
+        checkValidHash();
+    }
+
+    function checkValidHash() {
         // Check if the hash starts with the correct number of zeros
-        isValidHash = block.getHash().substring(0, block.getDifficulty()) === Array(block.getDifficulty() + 1).join('0');
-    });
-
-    function updateData() {
-        // Create a new block with the updated data
-        block = new Block(
-            prevHash,
-            data,
-            block.getNonce(),
-            block.getDifficulty()
-        );
+        isValidHash =
+            blockCard.getHash().substring(0, blockCard.getDifficulty()) ===
+            Array(blockCard.getDifficulty() + 1).join("0");
     }
 
     function mineBlock() {
-        block.mineBlock();
-        block = new Block(
-            prevHash,
-            data,
-            block.getNonce(),
-            block.getDifficulty()
-        );
+        blockCard.mineBlock();
+        checkValidHash();
     }
+
+    // Initial setup
+    updatePrevHash(prevHash);
 </script>
 
-<div class="block-card" class:valid-block={isValidHash} class:invalid-block={!isValidHash}>
+<div
+    class="block-card"
+    class:valid-block={isValidHash}
+    class:invalid-block={!isValidHash}
+>
     <p>Previous Hash: {prevHash}</p>
     <div>
         <label for="blockData">Data:</label>
-        <input id="blockData" oninput={updateData} bind:value={data} />
+        <input
+            id="blockData"
+            value={blockCard.getData()}
+            oninput={(e) => updateData(e.currentTarget?.value ?? "")}
+        />
     </div>
-    <p>Difficulty: {block.getDifficulty()}</p>
-    <p>Nonce: {block.getNonce()}</p>
-    <p class={isValidHash ? "valid-hash" : "invalid-hash"}>Hash: {block.getHash()}</p>
+    <div>
+        <label for="blockDifficulty">Difficulty:</label>
+        <input
+            id="blockDifficulty"
+            type="number"
+            min="1"
+            max="6"
+            value={blockCard.getDifficulty()}
+            oninput={(e) =>
+                updateDifficulty(parseInt(e.currentTarget?.value ?? ""))}
+        />
+    </div>
+    <p>Nonce: {blockCard.getNonce()}</p>
+    <p class={isValidHash ? "valid-hash" : "invalid-hash"}>
+        Hash: {blockCard.getHash()}
+    </p>
     <button onclick={mineBlock}>Mine</button>
 </div>
 
@@ -60,23 +82,36 @@
         margin: 10px;
         border-radius: 8px;
         transition: background-color 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
     }
-    
+
     .valid-block {
-        background-color: rgba(76, 175, 80, 0.1); /* Light green background for valid blocks */
-        border-color: #4CAF50;
+        background-color: rgba(
+            76,
+            175,
+            80,
+            0.1
+        ); /* Light green background for valid blocks */
+        border-color: #4caf50;
     }
-    
+
     .invalid-block {
-        background-color: rgba(244, 67, 54, 0.1); /* Light red background for invalid blocks */
-        border-color: #F44336;
+        background-color: rgba(
+            244,
+            67,
+            54,
+            0.1
+        ); /* Light red background for invalid blocks */
+        border-color: #f44336;
     }
-    
+
     .valid-hash {
-        color: #4CAF50; /* Green color for valid hash */
+        color: #4caf50; /* Green color for valid hash */
     }
-    
+
     .invalid-hash {
-        color: #F44336; /* Red color for invalid hash */
+        color: #f44336; /* Red color for invalid hash */
     }
 </style>

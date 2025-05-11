@@ -7,15 +7,15 @@ export class Block {
     private nonce: number;
     private difficulty: number;
 
-    constructor(prevHash: string, data: string, nonce: number = 0, difficulty: number = 2) {
+    constructor(prevHash: string, data: string, nonce: number, difficulty: number = 2) {
         this.prevHash = prevHash;
         this.data = data;
-        this.nonce = nonce;
+        this.nonce = 0;
         this.difficulty = difficulty;
         this.hash = this.calculateHash();
     }
 
-    private calculateHash(): string {
+    public calculateHash(): string {
         return crypto.SHA256(this.prevHash + this.data + this.nonce).toString();
     }
 
@@ -36,8 +36,18 @@ export class Block {
         return this.prevHash;
     }
 
+    public updatePrevHash(prevHash: string): void {
+        this.prevHash = prevHash;
+        this.hash = this.calculateHash();
+    }
+
     public getData(): string {
         return this.data;
+    }
+
+    public updateData(data: string): void {
+        this.data = data;
+        this.hash = this.calculateHash();
     }
 
     public getNonce(): number {
@@ -46,5 +56,10 @@ export class Block {
 
     public getDifficulty(): number {
         return this.difficulty;
+    }
+
+    public updateDifficulty(difficulty: number): void {
+        this.difficulty = difficulty;
+        this.hash = this.calculateHash();
     }
 }
