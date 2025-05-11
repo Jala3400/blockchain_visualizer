@@ -7,6 +7,7 @@ export class BlockCardClass {
     private nonce = $state(this.block.getNonce());
     private difficulty = $state(this.block.getDifficulty());
     private hash = $state(this.block.getHash());
+    private isValidHash = $state(this.checkValidHash());
 
     constructor(block: Block) {
         this.block = block;
@@ -15,6 +16,15 @@ export class BlockCardClass {
         this.nonce = block.getNonce();
         this.difficulty = block.getDifficulty();
         this.hash = block.getHash();
+        this.isValidHash = this.checkValidHash();
+    }
+
+    private checkValidHash(): boolean {
+        return this.hash.substring(0, this.difficulty) === Array(this.difficulty + 1).join("0");
+    }
+
+    public getIsValidHash(): boolean {
+        return this.isValidHash;
     }
 
     public getPrevHash(): string {
@@ -41,22 +51,26 @@ export class BlockCardClass {
         this.prevHash = newPrevHash;
         this.block.updatePrevHash(newPrevHash);
         this.hash = this.block.getHash();
+        this.isValidHash = this.checkValidHash();
     }
 
     public updateData(newData: string): void {
         this.data = newData;
         this.block.updateData(newData);
         this.hash = this.block.getHash();
+        this.isValidHash = this.checkValidHash();
     }
 
     public updateDifficulty(newDifficulty: number): void {
         this.difficulty = newDifficulty;
         this.block.updateDifficulty(newDifficulty);
         this.hash = this.block.getHash();
+        this.isValidHash = this.checkValidHash();
     }
 
     public mineBlock(): void {
         this.hash = this.block.mineBlock();
         this.nonce = this.block.getNonce();
+        this.isValidHash = this.checkValidHash();
     }
 }

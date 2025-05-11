@@ -6,36 +6,22 @@
         $props();
 
     const blockCard = new BlockCardClass(block);
-    let isValidHash = $state(
-        blockCard.getHash().substring(0, blockCard.getDifficulty()) ===
-            Array(blockCard.getDifficulty() + 1).join("0")
-    );
+    let isValidHash = $derived(blockCard.getIsValidHash());
 
     function updatePrevHash(newPrevHash: string) {
         blockCard.updatePrevHash(newPrevHash);
-        checkValidHash();
     }
 
     function updateData(newData: string) {
         blockCard.updateData(newData);
-        checkValidHash();
     }
 
     function updateDifficulty(newDifficulty: number) {
         blockCard.updateDifficulty(newDifficulty);
-        checkValidHash();
-    }
-
-    function checkValidHash() {
-        // Check if the hash starts with the correct number of zeros
-        isValidHash =
-            blockCard.getHash().substring(0, blockCard.getDifficulty()) ===
-            Array(blockCard.getDifficulty() + 1).join("0");
     }
 
     function mineBlock() {
         blockCard.mineBlock();
-        checkValidHash();
     }
 
     // Initial setup
