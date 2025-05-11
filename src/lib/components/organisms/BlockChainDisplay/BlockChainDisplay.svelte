@@ -16,7 +16,7 @@
     const thirdBlock = new Block(secondBlock.getHash(), "Third Block", 2);
 
     // Initialize with 3 blocks
-    let blocks: Block[] = [genesisBlock, secondBlock, thirdBlock];
+    let blocks: Block[] = $state([genesisBlock, secondBlock, thirdBlock]);
 
     // Handle data changes in any block
     function handleDataChange(index: number) {
@@ -25,6 +25,9 @@
             const prevHash = blocks[i - 1].getHash();
             blocks[i].updatePrevHash(prevHash);
         }
+
+        // Force reactivity update by creating a new array reference
+        blocks = [...blocks];
     }
 
     // Function to add a new block to the blockchain

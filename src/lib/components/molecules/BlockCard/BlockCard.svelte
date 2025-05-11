@@ -11,30 +11,36 @@
     const blockCard = new BlockCardClass(block);
     let isValidHash = $derived(blockCard.getIsValidHash());
 
+    // Watch for changes in prevHash from parent component
     $effect(() => {
-        // Calls update when there is a change in the hash
-        blockCard.getHash();
-        update();
+        if (prevHash !== blockCard.getPrevHash()) {
+            updatePrevHash(prevHash);
+        }
     });
 
     function updatePrevHash(newPrevHash: string) {
         blockCard.updatePrevHash(newPrevHash);
+        update();
     }
 
     function updateData(newData: string) {
         blockCard.updateData(newData);
+        update();
     }
 
     function updateDifficulty(newDifficulty: number) {
         blockCard.updateDifficulty(newDifficulty);
+        update();
     }
 
     function updateNonce(newNonce: number) {
         blockCard.updateNonce(newNonce);
+        update();
     }
 
     function mineBlock() {
         blockCard.mineBlock();
+        update();
     }
 
     // Initial setup
@@ -46,7 +52,7 @@
     class:valid-block={isValidHash}
     class:invalid-block={!isValidHash}
 >
-    <p>Previous Hash: {prevHash}</p>
+    <p>Previous Hash: {blockCard.getPrevHash()}</p>
     <div>
         <label for="blockData">Data:</label>
         <input
