@@ -8,13 +8,33 @@
 
     $effect(() => {
         if (prevHash) {
-            block = new Block(prevHash, data, block.getDifficulty());
+            block = new Block(
+                prevHash,
+                data,
+                block.getNonce(),
+                block.getDifficulty()
+            );
         }
     });
 
     function updateData() {
         // Create a new block with the updated data
-        block = new Block(prevHash, data, block.getDifficulty());
+        block = new Block(
+            prevHash,
+            data,
+            block.getNonce(),
+            block.getDifficulty()
+        );
+    }
+
+    function mineBlock() {
+        block.mineBlock();
+        block = new Block(
+            prevHash,
+            data,
+            block.getNonce(),
+            block.getDifficulty()
+        );
     }
 </script>
 
@@ -27,6 +47,7 @@
     <p>Difficulty: {block.getDifficulty()}</p>
     <p>Nonce: {block.getNonce()}</p>
     <p>Hash: {block.getHash()}</p>
+    <button onclick={mineBlock}>Mine</button>
 </div>
 
 <style>
@@ -34,5 +55,6 @@
         border: 1px solid #ccc;
         padding: 10px;
         margin: 10px;
+        border-radius: 8px;
     }
 </style>

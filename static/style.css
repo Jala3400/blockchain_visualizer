@@ -10,6 +10,7 @@
 
 * {
     box-sizing: border-box;
+    transition: all 0.1s ease;
 }
 
 body {
@@ -20,6 +21,20 @@ body {
     margin: 0;
     padding: 0;
     height: 100vh;
+}
+
+button {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    border: 1px solid var(--text-color);
+    border-radius: 5px;
+    padding: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: var(--text-color);
+    color: var(--background-color);
 }
 
 input {

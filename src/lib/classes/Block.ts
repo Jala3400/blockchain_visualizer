@@ -7,10 +7,10 @@ export class Block {
     private nonce: number;
     private difficulty: number;
 
-    constructor(prevHash: string, data: string, difficulty: number = 2) {
+    constructor(prevHash: string, data: string, nonce: number = 0, difficulty: number = 2) {
         this.prevHash = prevHash;
         this.data = data;
-        this.nonce = 0;
+        this.nonce = nonce;
         this.difficulty = difficulty;
         this.hash = this.calculateHash();
     }
