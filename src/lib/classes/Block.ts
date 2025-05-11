@@ -36,18 +36,8 @@ export class Block {
         return this.prevHash;
     }
 
-    public updatePrevHash(prevHash: string): void {
-        this.prevHash = prevHash;
-        this.hash = this.calculateHash();
-    }
-
     public getData(): string {
         return this.data;
-    }
-
-    public updateData(data: string): void {
-        this.data = data;
-        this.hash = this.calculateHash();
     }
 
     public getNonce(): number {
@@ -56,6 +46,21 @@ export class Block {
 
     public getDifficulty(): number {
         return this.difficulty;
+    }
+
+    public updatePrevHash(prevHash: string): void {
+        this.prevHash = prevHash;
+        this.hash = this.calculateHash();
+    }
+
+    public updateData(data: string): void {
+        this.data = data;
+        this.hash = this.calculateHash();
+    }
+
+    public updateNonce(nonce: number): void {
+        this.nonce = nonce;
+        this.hash = this.calculateHash();
     }
 
     public updateDifficulty(difficulty: number): void {

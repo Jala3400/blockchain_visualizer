@@ -23,6 +23,12 @@ export class BlockCardClass {
         return this.hash.substring(0, this.difficulty) === Array(this.difficulty + 1).join("0");
     }
 
+    public mineBlock(): void {
+        this.hash = this.block.mineBlock();
+        this.nonce = this.block.getNonce();
+        this.isValidHash = this.checkValidHash();
+    }
+
     public getIsValidHash(): boolean {
         return this.isValidHash;
     }
@@ -68,9 +74,10 @@ export class BlockCardClass {
         this.isValidHash = this.checkValidHash();
     }
 
-    public mineBlock(): void {
-        this.hash = this.block.mineBlock();
-        this.nonce = this.block.getNonce();
+    public updateNonce(newNonce: number): void {
+        this.nonce = newNonce;
+        this.block.updateNonce(newNonce);
+        this.hash = this.block.getHash();
         this.isValidHash = this.checkValidHash();
     }
 }

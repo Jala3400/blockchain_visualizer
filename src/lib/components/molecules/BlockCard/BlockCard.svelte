@@ -20,6 +20,10 @@
         blockCard.updateDifficulty(newDifficulty);
     }
 
+    function updateNonce(newNonce: number) {
+        blockCard.updateNonce(newNonce);
+    }
+
     function mineBlock() {
         blockCard.mineBlock();
     }
@@ -54,7 +58,16 @@
                 updateDifficulty(parseInt(e.currentTarget?.value ?? ""))}
         />
     </div>
-    <p>Nonce: {blockCard.getNonce()}</p>
+    <div>
+        <label for="blockNonce">Nonce:</label>
+        <input
+            id="blockNonce"
+            type="number"
+            min="0"
+            value={blockCard.getNonce()}
+            oninput={(e) => updateNonce(parseInt(e.currentTarget?.value ?? ""))}
+        />
+    </div>
     <p class={isValidHash ? "valid-hash" : "invalid-hash"}>
         Hash: {blockCard.getHash()}
     </p>
