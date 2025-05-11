@@ -4,17 +4,26 @@
     let { block, prevHash = "0" }: { block: Block; prevHash?: string } =
         $props();
 
+    let data = $state(block.getData());
+
     $effect(() => {
         if (prevHash) {
-            block.setPrevHash(prevHash);
+            block = new Block(prevHash, data, block.getDifficulty());
         }
     });
+
+    function updateData() {
+        // Create a new block with the updated data
+        block = new Block(prevHash, data, block.getDifficulty());
+    }
 </script>
 
 <div class="block-card">
     <p>Previous Hash: {prevHash}</p>
-    <p>Timestamp: {block.getTimestamp()}</p>
-    <p>Data: {block.getData()}</p>
+    <div>
+        <label for="blockData">Data:</label>
+        <input id="blockData" oninput={updateData} bind:value={data} />
+    </div>
     <p>Difficulty: {block.getDifficulty()}</p>
     <p>Nonce: {block.getNonce()}</p>
     <p>Hash: {block.getHash()}</p>

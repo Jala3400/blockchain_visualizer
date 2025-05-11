@@ -21,3 +21,11 @@ body {
     padding: 0;
     height: 100vh;
 }
+
+input {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    border: 1px solid var(--text-color);
+    border-radius: 5px;
+    padding: 5px;
+}

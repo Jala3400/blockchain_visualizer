@@ -6,26 +6,26 @@ export class Block {
     private data: string;
     private nonce: number;
     private difficulty: number;
-    private timestamp: number;
 
     constructor(prevHash: string, data: string, difficulty: number = 2) {
         this.prevHash = prevHash;
         this.data = data;
-        this.timestamp = Date.now();
         this.nonce = 0;
         this.difficulty = difficulty;
         this.hash = this.calculateHash();
     }
 
     private calculateHash(): string {
-        return crypto.SHA256(this.prevHash + this.data + this.timestamp + this.nonce).toString();
+        return crypto.SHA256(this.prevHash + this.data + this.nonce).toString();
     }
 
-    public mineBlock(): void {
+    public mineBlock(): string {
         while (this.hash.substring(0, this.difficulty) !== Array(this.difficulty + 1).join('0')) {
             this.nonce++;
             this.hash = this.calculateHash();
         }
+
+        return this.hash;
     }
 
     public getHash(): string {
@@ -34,10 +34,6 @@ export class Block {
 
     public getPrevHash(): string {
         return this.prevHash;
-    }
-
-    public setPrevHash(prevHash: string): void {
-        this.prevHash = prevHash;
     }
 
     public getData(): string {
@@ -50,9 +46,5 @@ export class Block {
 
     public getDifficulty(): number {
         return this.difficulty;
-    }
-
-    public getTimestamp(): number {
-        return this.timestamp;
     }
 }
