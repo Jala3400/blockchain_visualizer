@@ -52,7 +52,7 @@
     class:valid-block={isValidHash}
     class:invalid-block={!isValidHash}
 >
-    <p>Previous Hash: {blockCard.getPrevHash()}</p>
+    <p class="hash-text">Prev Hash: {blockCard.getPrevHash()}</p>
     <div>
         <label for="blockData">Data:</label>
         <input
@@ -83,7 +83,11 @@
             oninput={(e) => updateNonce(parseInt(e.currentTarget?.value ?? ""))}
         />
     </div>
-    <p class={isValidHash ? "valid-hash" : "invalid-hash"}>
+    <p
+        class="hash-text"
+        class:valid-hash={isValidHash}
+        class:invalid-hash={!isValidHash}
+    >
         Hash: {blockCard.getHash()}
     </p>
     <button onclick={mineBlock}>Mine</button>
@@ -117,6 +121,13 @@
             0.1
         ); /* Light red background for invalid blocks */
         border-color: #f44336;
+    }
+
+    .hash-text {
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+        max-width: 100%;
     }
 
     .valid-hash {
