@@ -1,43 +1,35 @@
 <script lang="ts">
     import { Block } from "$lib/classes/Block";
-    import { BlockCardClass } from "./BlockCardClass.svelte.ts";
 
-    let {
-        block,
-        prevHash = "0",
-        update = () => {},
-    }: { block: Block; prevHash?: string; update?: () => void } = $props();
+    let { block = $bindable(), update = () => {} }: { block: Block; update?: () => void } =
+        $props();
 
-    const blockCard = new BlockCardClass(block);
-    let isValidHash = $derived(blockCard.getIsValidHash());
-
-    function updatePrevHash(newPrevHash: string) {
-        blockCard.updatePrevHash(newPrevHash);
-        update();
-    }
+    let blockData = $derived(block.getData());
+    let blockNonce = $derived(block.getNonce());
+    let blockDifficulty = $derived(block.getDifficulty());
+    let blockHash = $derived(block.getHash());
+    let blockPrevHash = $derived(block.getPrevHash());
+    let isValidHash = $derived(block.isValidHash());
 
     function updateData(newData: string) {
-        blockCard.updateData(newData);
+        block.updateData(newData);
         update();
     }
 
     function updateDifficulty(newDifficulty: number) {
-        blockCard.updateDifficulty(newDifficulty);
+        block.updateDifficulty(newDifficulty);
         update();
     }
 
     function updateNonce(newNonce: number) {
-        blockCard.updateNonce(newNonce);
+        block.updateNonce(newNonce);
         update();
     }
 
     function mineBlock() {
-        blockCard.mineBlock();
+        block.mineBlock();
         update();
     }
-
-    // Initial setup
-    updatePrevHash(prevHash);
 </script>
 
 <div
@@ -45,12 +37,12 @@
     class:valid-block={isValidHash}
     class:invalid-block={!isValidHash}
 >
-    <p class="hash-text">Prev Hash: {blockCard.getPrevHash()}</p>
+    <p class="hash-text">Prev Hash: {blockPrevHash}</p>
     <div>
         <label for="blockData">Data:</label>
         <input
             id="blockData"
-            value={blockCard.getData()}
+            value={blockData}
             oninput={(e) => updateData(e.currentTarget?.value ?? "")}
         />
     </div>
@@ -61,7 +53,7 @@
             type="number"
             min="1"
             max="6"
-            value={blockCard.getDifficulty()}
+            value={blockDifficulty}
             oninput={(e) =>
                 updateDifficulty(parseInt(e.currentTarget?.value ?? ""))}
         />
@@ -72,7 +64,7 @@
             id="blockNonce"
             type="number"
             min="0"
-            value={blockCard.getNonce()}
+            value={blockNonce}
             oninput={(e) => updateNonce(parseInt(e.currentTarget?.value ?? ""))}
         />
     </div>
@@ -81,7 +73,7 @@
         class:valid-hash={isValidHash}
         class:invalid-hash={!isValidHash}
     >
-        Hash: {blockCard.getHash()}
+        Hash: {blockHash}
     </p>
     <button onclick={mineBlock}>Mine</button>
 </div>

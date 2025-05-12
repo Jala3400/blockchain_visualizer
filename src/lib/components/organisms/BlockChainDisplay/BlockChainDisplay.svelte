@@ -5,33 +5,32 @@
     // Create initial blocks
     const genesisBlock = new Block(
         "0000000000000000000000000000000000000000000000000000000000000000",
-        "",
-        2
+        ""
     );
 
     // Create second block with previous hash from genesis block
-    const secondBlock = new Block(genesisBlock.getHash(), "Second Block", 2);
+    const secondBlock = new Block(genesisBlock.getHash(), "Second Block");
 
     // Create third block with previous hash from second block
-    const thirdBlock = new Block(secondBlock.getHash(), "Third Block", 2);
+    const thirdBlock = new Block(secondBlock.getHash(), "Third Block");
 
     // Initialize with 3 blocks
     let blocks: Block[] = $state([genesisBlock, secondBlock, thirdBlock]);
 
     // Handle data changes in any block
     function handleDataChange(index: number) {
-        // When a block changes, update all subsequent blocks
-        for (let i = index + 1; i < blocks.length; i++) {
-            const prevHash = blocks[i - 1].getHash();
-            blocks[i].updatePrevHash(prevHash);
+        for (let i = index; i < blocks.length - 1; i++) {
+            const prevHash = blocks[i].getHash();
+            blocks[i + 1].updatePrevHash(prevHash);
         }
+        blocks = [...blocks];
     }
 
     // Function to add a new block to the blockchain
     function addBlock() {
         const prevHash = blocks[blocks.length - 1].getHash();
-        const newBlock = new Block(prevHash, "", 2);
-        blocks = [...blocks, newBlock];
+        const newBlock = new Block(prevHash, "");
+        blocks.push(newBlock);
     }
 </script>
 
@@ -40,8 +39,7 @@
         <div class="block-wrapper">
             <h3>Block #{i + 1}</h3>
             <BlockCard
-                {block}
-                prevHash={i > 0 ? blocks[i - 1].getHash() : "0"}
+                bind:block={blocks[i]}
                 update={() => handleDataChange(i)}
             />
         </div>
