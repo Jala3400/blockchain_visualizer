@@ -11,13 +11,6 @@
     const blockCard = new BlockCardClass(block);
     let isValidHash = $derived(blockCard.getIsValidHash());
 
-    // Watch for changes in prevHash from parent component
-    $effect(() => {
-        if (prevHash !== blockCard.getPrevHash()) {
-            updatePrevHash(prevHash);
-        }
-    });
-
     function updatePrevHash(newPrevHash: string) {
         blockCard.updatePrevHash(newPrevHash);
         update();

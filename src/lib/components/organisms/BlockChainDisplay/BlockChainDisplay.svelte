@@ -25,9 +25,6 @@
             const prevHash = blocks[i - 1].getHash();
             blocks[i].updatePrevHash(prevHash);
         }
-
-        // Force reactivity update by creating a new array reference
-        blocks = [...blocks];
     }
 
     // Function to add a new block to the blockchain

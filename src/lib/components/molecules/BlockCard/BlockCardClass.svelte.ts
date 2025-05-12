@@ -1,6 +1,7 @@
 import { Block } from "$lib/classes/Block";
+import type { BlockObserver } from "$lib/classes/Block";
 
-export class BlockCardClass {
+export class BlockCardClass implements BlockObserver {
     private block = new Block("", "", 0, 2);
     private prevHash = $state(this.block.getPrevHash());
     private data = $state(this.block.getData());
@@ -11,6 +12,11 @@ export class BlockCardClass {
 
     constructor(block: Block) {
         this.block = block;
+        this.block.addObserver(this);
+        this.update(block);
+    }
+
+    public update(block: Block): void {
         this.prevHash = block.getPrevHash();
         this.data = block.getData();
         this.nonce = block.getNonce();
@@ -24,9 +30,7 @@ export class BlockCardClass {
     }
 
     public mineBlock(): void {
-        this.hash = this.block.mineBlock();
-        this.nonce = this.block.getNonce();
-        this.isValidHash = this.checkValidHash();
+        this.block.mineBlock();
     }
 
     public getIsValidHash(): boolean {
@@ -54,30 +58,18 @@ export class BlockCardClass {
     }
 
     public updatePrevHash(newPrevHash: string): void {
-        this.prevHash = newPrevHash;
         this.block.updatePrevHash(newPrevHash);
-        this.hash = this.block.getHash();
-        this.isValidHash = this.checkValidHash();
     }
 
     public updateData(newData: string): void {
-        this.data = newData;
         this.block.updateData(newData);
-        this.hash = this.block.getHash();
-        this.isValidHash = this.checkValidHash();
     }
 
     public updateDifficulty(newDifficulty: number): void {
-        this.difficulty = newDifficulty;
         this.block.updateDifficulty(newDifficulty);
-        this.hash = this.block.getHash();
-        this.isValidHash = this.checkValidHash();
     }
 
     public updateNonce(newNonce: number): void {
-        this.nonce = newNonce;
         this.block.updateNonce(newNonce);
-        this.hash = this.block.getHash();
-        this.isValidHash = this.checkValidHash();
     }
 }
