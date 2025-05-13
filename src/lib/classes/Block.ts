@@ -6,6 +6,8 @@ export class Block {
     private data: string;
     private nonce: number;
     private difficulty: number;
+    private isMining: boolean = false;
+    private onMiningUpdate?: (nonce: number, hash: string) => void;
 
     constructor(prevHash: string, data: string, nonce: number = 0, difficulty: number = 2) {
         this.prevHash = prevHash;
@@ -23,12 +25,30 @@ export class Block {
         return crypto.SHA256(this.prevHash + this.data + this.nonce).toString();
     }
 
-    public mineBlock(): string {
-        while (this.hash.substring(0, this.difficulty) !== Array(this.difficulty + 1).join('0')) {
+    public setMiningCallback(callback: (nonce: number, hash: string) => void) {
+        this.onMiningUpdate = callback;
+    }
+
+    public async mineBlock(): Promise<string> {
+        this.isMining = true;
+
+        while (!this.isValidHash()) {
             this.nonce++;
             this.hash = this.calculateHash();
+
+            if (this.onMiningUpdate) {
+                this.onMiningUpdate(this.nonce, this.hash);
+                // Add a small delay to make the animation visible
+                await new Promise(resolve => setTimeout(resolve, 10));
+            }
         }
+
+        this.isMining = false;
         return this.hash;
+    }
+
+    public isCurrentlyMining(): boolean {
+        return this.isMining;
     }
 
     public getHash(): string {

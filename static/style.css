@@ -39,10 +39,20 @@ button:hover {
     color: var(--background-color);
 }
 
+button:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
 input {
     background-color: var(--background-color);
     color: var(--text-color);
     border: 1px solid var(--text-color);
     border-radius: 5px;
     padding: 5px;
+}
+
+input:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
 }

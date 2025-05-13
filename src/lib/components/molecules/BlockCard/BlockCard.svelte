@@ -1,8 +1,10 @@
 <script lang="ts">
     import { Block } from "$lib/classes/Block";
 
-    let { block = $bindable(), update = () => {} }: { block: Block; update?: () => void } =
-        $props();
+    let {
+        block = $bindable(),
+        update = () => {},
+    }: { block: Block; update?: () => void } = $props();
 
     let blockData = $derived(block.getData());
     let blockNonce = $derived(block.getNonce());
@@ -10,6 +12,16 @@
     let blockHash = $derived(block.getHash());
     let blockPrevHash = $derived(block.getPrevHash());
     let isValidHash = $derived(block.isValidHash());
+    let isMining = $derived(block.isCurrentlyMining());
+
+    // Set up mining callback
+    $effect(() => {
+        block.setMiningCallback((nonce, hash) => {
+            blockNonce = nonce;
+            blockHash = hash;
+            isMining = true;
+        });
+    });
 
     function updateData(newData: string) {
         block.updateData(newData);
@@ -26,8 +38,10 @@
         update();
     }
 
-    function mineBlock() {
-        block.mineBlock();
+    async function mineBlock() {
+        isMining = true;
+        await block.mineBlock();
+        isMining = false;
         update();
     }
 </script>
@@ -36,6 +50,7 @@
     class="block-card"
     class:valid-block={isValidHash}
     class:invalid-block={!isValidHash}
+    class:mining={isMining}
 >
     <p class="hash-text">Prev Hash: {blockPrevHash}</p>
     <div>
@@ -44,6 +59,7 @@
             id="blockData"
             value={blockData}
             oninput={(e) => updateData(e.currentTarget?.value ?? "")}
+            disabled={isMining}
         />
     </div>
     <div>
@@ -56,6 +72,7 @@
             value={blockDifficulty}
             oninput={(e) =>
                 updateDifficulty(parseInt(e.currentTarget?.value ?? ""))}
+            disabled={isMining}
         />
     </div>
     <div>
@@ -66,6 +83,7 @@
             min="0"
             value={blockNonce}
             oninput={(e) => updateNonce(parseInt(e.currentTarget?.value ?? ""))}
+            disabled={isMining}
         />
     </div>
     <p
@@ -75,7 +93,9 @@
     >
         Hash: {blockHash}
     </p>
-    <button onclick={mineBlock}>Mine</button>
+    <button onclick={mineBlock} disabled={isMining}>
+        {isMining ? "Mining..." : "Mine"}
+    </button>
 </div>
 
 <style>
@@ -121,5 +141,10 @@
 
     .invalid-hash {
         color: #f44336; /* Red color for invalid hash */
+    }
+
+    .mining {
+        background-color: rgba(255, 255, 255, 0.1);
+        border-color: #cccccc;
     }
 </style>

@@ -34,18 +34,18 @@
     }
 
     // Function to mine all blocks in the blockchain
-    function mineAllBlocks() {
+    async function mineAllBlocks() {
         for (let i = 0; i < blocks.length - 1; i++) {
-            blocks[i].mineBlock();
+            await blocks[i].mineBlock();
             blocks[i + 1].updatePrevHash(blocks[i].getHash());
         }
-        blocks[blocks.length - 1].mineBlock();
+        await blocks[blocks.length - 1].mineBlock();
         blocks = [...blocks];
     }
 </script>
 
 <div class="blockchain">
-    {#each blocks as block, i}
+    {#each blocks as _, i}
         <div class="block-wrapper">
             <h3>Block #{i + 1}</h3>
             <BlockCard
