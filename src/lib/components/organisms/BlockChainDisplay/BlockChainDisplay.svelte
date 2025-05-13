@@ -32,6 +32,16 @@
         const newBlock = new Block(prevHash, "");
         blocks.push(newBlock);
     }
+
+    // Function to mine all blocks in the blockchain
+    function mineAllBlocks() {
+        for (let i = 0; i < blocks.length - 1; i++) {
+            blocks[i].mineBlock();
+            blocks[i + 1].updatePrevHash(blocks[i].getHash());
+        }
+        blocks[blocks.length - 1].mineBlock();
+        blocks = [...blocks];
+    }
 </script>
 
 <div class="blockchain">
@@ -47,6 +57,7 @@
 
     <div class="add-block-container">
         <button onclick={addBlock}>Add New Block</button>
+        <button onclick={mineAllBlocks}>Mine All Blocks</button>
     </div>
 </div>
 
@@ -75,6 +86,7 @@
         width: 100%;
         display: flex;
         justify-content: center;
+        gap: 10px;
     }
 
     button {
