@@ -16,10 +16,11 @@
 
     // Set up mining callback
     $effect(() => {
-        block.setMiningCallback((nonce, hash) => {
-            blockNonce = nonce;
-            blockHash = hash;
-            isMining = true;
+        block.setMiningCallback(() => {
+            blockNonce = block.getNonce();
+            blockHash = block.getHash();
+            isValidHash = block.isValidHash();
+            isMining = block.isCurrentlyMining();
         });
     });
 

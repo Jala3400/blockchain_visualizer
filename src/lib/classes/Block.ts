@@ -7,7 +7,7 @@ export class Block {
     private nonce: number;
     private difficulty: number;
     private isMining: boolean = false;
-    private onMiningUpdate?: (nonce: number, hash: string) => void;
+    private onMiningUpdate?: () => void;
 
     constructor(prevHash: string, data: string, nonce: number = 0, difficulty: number = 2) {
         this.prevHash = prevHash;
@@ -25,7 +25,7 @@ export class Block {
         return crypto.SHA256(this.prevHash + this.data + this.nonce).toString();
     }
 
-    public setMiningCallback(callback: (nonce: number, hash: string) => void) {
+    public setMiningCallback(callback: () => void) {
         this.onMiningUpdate = callback;
     }
 
@@ -37,13 +37,16 @@ export class Block {
             this.hash = this.calculateHash();
 
             if (this.onMiningUpdate) {
-                this.onMiningUpdate(this.nonce, this.hash);
+                this.onMiningUpdate();
                 // Add a small delay to make the animation visible
                 await new Promise(resolve => setTimeout(resolve, 20 / Math.sqrt(this.nonce)));
             }
         }
 
         this.isMining = false;
+        if (this.onMiningUpdate) {
+            this.onMiningUpdate();
+        }
         return this.hash;
     }
 
