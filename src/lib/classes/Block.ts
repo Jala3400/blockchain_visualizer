@@ -39,7 +39,7 @@ export class Block {
             if (this.onMiningUpdate) {
                 this.onMiningUpdate(this.nonce, this.hash);
                 // Add a small delay to make the animation visible
-                await new Promise(resolve => setTimeout(resolve, 10));
+                await new Promise(resolve => setTimeout(resolve, 20 / Math.sqrt(this.nonce)));
             }
         }
 
