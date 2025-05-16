@@ -1,38 +1,14 @@
-# sv
+# Blockchain Visualizer
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+Este proyecto es un visualizador que permite ver cómo funciona una blockchain muy básica. Está hecho con Svlete y TypeScript.
 
-## Creating a project
+Permite cambiar los datos de los bloques, independientemente de si se han minado o no, y ver cómo afecta a su hash. También permite minar nuevos bloques y ver cómo se calcula el hash de cada bloque.
 
-If you're seeing this, you've probably already done this step. Congrats!
+A la hora de minar se ha añadido un retardo pequeño entre intento e intento para que se pueda ver mejor el proceso.
 
-```bash
-# create a new project in the current directory
-npx sv create
+![Blockchain Visualizer](./images/image.png)
 
-# create a new project in my-app
-npx sv create my-app
-```
+## Ejecutar el proyecto
 
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-## Building
-
-To create a production version of your app:
-
-```bash
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+- `pnpm install` para instalar las dependencias.
+- `pnpm dev` para iniciar el servidor de desarrollo.
